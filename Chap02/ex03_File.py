@@ -30,3 +30,18 @@
 #         break
 #     print(line, end='')
 # f.close()
+
+# f = open('새파일.txt', 'r', encoding='utf-8')
+# for line in f.readlines():
+#     print(line, end=' ')
+# f.close()
+
+# 6. 파일 전체 내용 읽기
+# f = open('새파일.txt', 'r', encoding='utf-8')
+# print(f.read())
+# f.close()
+
+# 7. with문을 사용하여 자동으로 파일 닫기
+# with open('새파일.txt', 'r', encoding='utf-8') as f:
+#     print(f.read())
+
