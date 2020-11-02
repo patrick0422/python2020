@@ -119,14 +119,14 @@
 #endregion
 
 #region 7. 람다(lambda)식
-add = lambda a, b: a + b
-sub = lambda a, b: a - b
-def calc(op, func, a, b):
-    print(f'{a}와 {b}의 {op} 결과 : {func(a,b)}')
+# add = lambda a, b: a + b
+# sub = lambda a, b: a - b
+# def calc(op, func, a, b):
+#     print(f'{a}와 {b}의 {op} 결과 : {func(a,b)}')
 
-calc('덧셈', add, 5, 10)
-calc('뺄셈', sub, 5, 10)
-calc('곱셈', lambda a, b: a * b, 5, 10)
-calc('나눗셈', lambda a, b: a / b, 5, 10)
+# calc('덧셈', add, 5, 10)
+# calc('뺄셈', sub, 5, 10)
+# calc('곱셈', lambda a, b: a * b, 5, 10)
+# calc('나눗셈', lambda a, b: a / b, 5, 10)
 
 #endregion
