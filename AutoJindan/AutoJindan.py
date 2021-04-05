@@ -26,10 +26,13 @@ options = webdriver.ChromeOptions()
 options.add_experimental_option("excludeSwitches", ["enable-logging"])
 driver = webdriver.Chrome(executable_path='D:/Coding/python/AutoJindan/chromedriver', options=options)
 driver.get(url=URL)
+
 # 최대 대기 시간
 driver.implicitly_wait(time_to_wait=5)
 TIME = 2
 
+
+# 자가진단에 쓸 계정 정보
 NAME = '양태웅'
 DAY_OF_BIRTH = '040422'
 PASSWORD = '0422'
@@ -65,12 +68,16 @@ driver.find_element_by_class_name('searchBtn').click()
 # 3-5. 학교 선택
 try:
     # 검색 결과가 뜰때까지 최대 5초간 탐색
-    element = WebDriverWait(driver, 5).until(
+    element = WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, '//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a'))
     )
-finally:
-    # 선택
-    driver.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a').click()
+except:
+    print('응답 없음')
+    quit()
+
+# 선택
+driver.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a').click()
+
 # 제출
 driver.find_element_by_class_name('layerFullBtn').click()
 
@@ -79,123 +86,89 @@ driver.find_element_by_class_name('layerFullBtn').click()
 # 4. 성명, 생년월일 선택
 driver.find_element_by_id('user_name_input').send_keys(NAME)
 driver.find_element_by_id('birthday_input').send_keys(DAY_OF_BIRTH)
+
 # 제출
 driver.find_element_by_id('btnConfirm').click()
-#비밀번호 입력 페이지로 넘어가는 동안 잠깐 멈춰줘야 하는데, 암묵적 대기가 먹지 않으니 그냥 sleep으로 멈춤
-sleep(TIME)
 
-
+# 비밀번호 입력 페이지로 넘어가는 동안 명시적 대기 사용
+WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'input_text_common')))
 
 # 5. 비밀번호 선택
+sleep(0.5)
 driver.find_element_by_class_name('input_text_common').send_keys(PASSWORD)
+
 # 제출
 driver.find_element_by_xpath('//*[@id="btnConfirm"]').click()
-
-sleep(TIME)
-
+print('로그인 완료')
 #endregion
 
 
 
 #region 자가진단
-#학생 리스트 가져오기
+
+# 학생 리스트 가져오기
+sleep(1)
+
 items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_tag_name('li')
-print(f'확인된 학생 수 : {len(items)}명')
 
+print(f'확인된 총 학생 수 : {len(items)}명')
 
+while True:
+    # 자가진단 완료하지 않은 학생만 가져오기
+    items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_css_selector('item:not(.active)')
 
+    print(f'자가진단이 되지 않은 학생 수 : {len(items)}명')
+    if len(items) == 0:
+        print('자가진단이 모두 완료되었습니다.')
+        break
 
+    item = items[0]
+    name = item.get_attribute('innerHTML')
 
-
-#region SAVED
-# 학생 수 만큼 루프
-# for item in items:
-#     sleep(3)
-#     # 자가진단 진입
-#     try:
-#         name = item.find_element_by_class_name('name').get_attribute('innerHTML')
-#         item.find_element_by_class_name('name').click()
-        
-#         # 학생이 이미 참여 했을 경우 발생하는 경고창 처리
-#         try:
-#             print(f'{name}(은)는 이미 참여하였습니다')
-#             driver.switch_to.alert().dismiss()
-#         except:
-#             pass
-
-#         sleep(3)
-
-#         # 조사 응답
-#         driver.find_element_by_xpath('//*[@id="survey_q1a1"]').click()
-#         driver.find_element_by_xpath('//*[@id="survey_q2a1"]').click()
-#         driver.find_element_by_xpath('//*[@id="survey_q3a1"]').click()
-
-#         sleep(1)
-
-#         # 응답 제출
-#         driver.find_element_by_id('btnConfirm').click()
-
-#         sleep(3)
-#         # 처음으로 버튼 클릭
-#         driver.find_element_by_xpath('/html/body/app-root/div/div[1]/div[1]/ul/li/a').click()
-#     except selenium.common.exceptions.StaleElementReferenceException as err:
-#         print(f'[StaleElementReferenceException] Passing {name}')
-#         pass
-#endregion
-
-
-
-
-
-i = 0
-
-for i in range(0, len(items)):
-    print(f'확인된 학생 수 : {len(items)}명')
-    sleep(3)
+    #region 자가진단
+    item.find_element_by_class_name('name').click()
+    print(f'{name}학생의 자가진단을 시작합니다.')
+    
+    # 학생이 자가진단에 참여한지 3분이 지나지 않았을 경우 발생하는 메세지 처리
+    # try:
+    #     driver.switch_to.alert.dismiss()
+    #     print(f'{name}(은)는 자가진단을 완료한지 3분이 지나지 않았습니다.')
+    #     continue
+    # except:
+    #     pass
+    
     try:
-        i += 1
-        # 자가진단 진입
-        name = items[i].find_element_by_class_name('name').get_attribute('innerHTML') 
-        items[i].find_element_by_class_name('name').click()
-        
-        # 학생이 이미 참여 했을 경우 발생하는 경고창 처리
-        try:
-            driver.switch_to.alert.dismiss()
-            print(f'{i}.{name}(은)는 이미 자가진단이 완료되었습니다.')
-        except:
-            sleep(3)
+        element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="survey_q1a1"]')))
+    except:
+        print('응답 없음')
+        quit()
 
-            # 조사 응답
-            driver.find_element_by_xpath('//*[@id="survey_q1a1"]').click()
-            driver.find_element_by_xpath('//*[@id="survey_q2a1"]').click()
-            driver.find_element_by_xpath('//*[@id="survey_q3a1"]').click()
+    # 조사 응답
+    driver.find_element_by_xpath('//*[@id="survey_q1a1"]').click()
+    driver.find_element_by_xpath('//*[@id="survey_q2a1"]').click()
+    driver.find_element_by_xpath('//*[@id="survey_q3a1"]').click()
+    
+    print('질문 답변 선택 완료')
 
-            sleep(1)
+    # 응답 제출
+    driver.find_element_by_id('btnConfirm').click()
 
-            # 응답 제출
-            driver.find_element_by_id('btnConfirm').click()
+    print(f'{name} 제출 완료')
 
-            print(f'{name} 제출 완료')
-
-            sleep(3)
-            # 처음으로 버튼 클릭
-            driver.find_element_by_xpath('/html/body/app-root/div/div[1]/div[1]/ul/li/a').click()
-
-    except selenium.common.exceptions.StaleElementReferenceException as err:
-        print(f'[StaleElementReferenceException] Passing {name}')
-        pass
-
-
-
+    try:
+        element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/app-root/div/div[1]/div[1]/ul/li/a')))
+    except:
+        print('응답 없음')
+        quit()
+    # 처음으로 버튼 클릭
+    driver.find_element_by_xpath('/html/body/app-root/div/div[1]/div[1]/ul/li/a').click()
+    #endregion
 
 #endregion
-
-
-
-sleep(TIME)
-
+    
 
 
 # 브라우저 닫기
-print('\nTERMINATING!!')
+sleep(TIME)
+print('프로그램을 종료합니다.')
 driver.close()
