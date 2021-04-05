@@ -110,12 +110,12 @@ print('로그인 완료')
 sleep(1)
 
 items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_tag_name('li')
-
 print(f'확인된 총 학생 수 : {len(items)}명')
 
+
 while True:
-    # 자가진단 완료하지 않은 학생만 가져오기
-    items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_css_selector('item:not(.active)')
+    # # 자가진단 완료하지 않은 학생만 가져오기
+    items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_css_selector('li:not(.active)')
 
     print(f'자가진단이 되지 않은 학생 수 : {len(items)}명')
     if len(items) == 0:
@@ -123,19 +123,11 @@ while True:
         break
 
     item = items[0]
-    name = item.get_attribute('innerHTML')
+    name = item.find_element_by_class_name('name').get_attribute('innerHTML')
 
     #region 자가진단
     item.find_element_by_class_name('name').click()
     print(f'{name}학생의 자가진단을 시작합니다.')
-    
-    # 학생이 자가진단에 참여한지 3분이 지나지 않았을 경우 발생하는 메세지 처리
-    # try:
-    #     driver.switch_to.alert.dismiss()
-    #     print(f'{name}(은)는 자가진단을 완료한지 3분이 지나지 않았습니다.')
-    #     continue
-    # except:
-    #     pass
     
     try:
         element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="survey_q1a1"]')))
@@ -147,8 +139,6 @@ while True:
     driver.find_element_by_xpath('//*[@id="survey_q1a1"]').click()
     driver.find_element_by_xpath('//*[@id="survey_q2a1"]').click()
     driver.find_element_by_xpath('//*[@id="survey_q3a1"]').click()
-    
-    print('질문 답변 선택 완료')
 
     # 응답 제출
     driver.find_element_by_id('btnConfirm').click()
