@@ -27,15 +27,18 @@ options.add_experimental_option("excludeSwitches", ["enable-logging"])
 driver = webdriver.Chrome(executable_path='D:/Coding/python/AutoJindan/chromedriver', options=options)
 driver.get(url=URL)
 
-# 최대 대기 시간
-driver.implicitly_wait(time_to_wait=5)
-TIME = 2
+# 암묵적 대기 시간
+driver.implicitly_wait(30)
+# 명시적 대기 시간
+wait = WebDriverWait(driver, 30, 0.2)
 
 
-# 자가진단에 쓸 계정 정보
+# 자가진단에 쓸 정보
 NAME = '양태웅'
 DAY_OF_BIRTH = '040422'
 PASSWORD = '0422'
+
+target_num = 8
 
 #endregion
 
@@ -66,18 +69,9 @@ driver.find_element_by_id('orgname').send_keys('광주소프트웨어마이스�
 driver.find_element_by_class_name('searchBtn').click()
 
 # 3-5. 학교 선택
-try:
-    # 검색 결과가 뜰때까지 최대 5초간 탐색
-    element = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.XPATH, '//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a'))
-    )
-except:
-    print('응답 없음')
-    quit()
-
+wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a')))
 # 선택
 driver.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a').click()
-
 # 제출
 driver.find_element_by_class_name('layerFullBtn').click()
 
@@ -90,14 +84,14 @@ driver.find_element_by_id('birthday_input').send_keys(DAY_OF_BIRTH)
 # 제출
 driver.find_element_by_id('btnConfirm').click()
 
-# 비밀번호 입력 페이지로 넘어가는 동안 명시적 대기 사용
-WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'input_text_common')))
-
 # 5. 비밀번호 선택
-sleep(0.5)
+sleep(1)
+wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'input_text_common')))
 driver.find_element_by_class_name('input_text_common').send_keys(PASSWORD)
 
 # 제출
+wait.until(EC.presence_of_element_located((By.ID, 'btnConfirm')))
+wait.until(EC.element_to_be_clickable((By.ID, 'btnConfirm')))
 driver.find_element_by_xpath('//*[@id="btnConfirm"]').click()
 print('로그인 완료')
 #endregion
@@ -107,9 +101,10 @@ print('로그인 완료')
 #region 자가진단
 
 # 학생 리스트 가져오기
-sleep(1)
-
 items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_tag_name('li')
+while len(items) < target_num:
+    items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_tag_name('li')
+
 print(f'확인된 총 학생 수 : {len(items)}명')
 
 
@@ -117,6 +112,7 @@ while True:
     # # 자가진단 완료하지 않은 학생만 가져오기
     items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_css_selector('li:not(.active)')
 
+    sleep(0.5)
     print(f'자가진단이 되지 않은 학생 수 : {len(items)}명')
     if len(items) == 0:
         print('자가진단이 모두 완료되었습니다.')
@@ -126,14 +122,9 @@ while True:
     name = item.find_element_by_class_name('name').get_attribute('innerHTML')
 
     #region 자가진단
+    # sleep(0.5)
     item.find_element_by_class_name('name').click()
     print(f'{name}학생의 자가진단을 시작합니다.')
-    
-    try:
-        element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '//*[@id="survey_q1a1"]')))
-    except:
-        print('응답 없음')
-        quit()
 
     # 조사 응답
     driver.find_element_by_xpath('//*[@id="survey_q1a1"]').click()
@@ -145,11 +136,6 @@ while True:
 
     print(f'{name} 제출 완료')
 
-    try:
-        element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, '/html/body/app-root/div/div[1]/div[1]/ul/li/a')))
-    except:
-        print('응답 없음')
-        quit()
     # 처음으로 버튼 클릭
     driver.find_element_by_xpath('/html/body/app-root/div/div[1]/div[1]/ul/li/a').click()
     #endregion
@@ -159,6 +145,6 @@ while True:
 
 
 # 브라우저 닫기
-sleep(TIME)
+sleep(2)
 print('프로그램을 종료합니다.')
 driver.close()
