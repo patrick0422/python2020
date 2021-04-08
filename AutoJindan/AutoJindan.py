@@ -101,6 +101,7 @@ print('로그인 완료')
 #region 자가진단
 
 # 학생 리스트 가져오기
+sleep(3)
 items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_tag_name('li')
 while len(items) < target_num:
     items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_tag_name('li')
