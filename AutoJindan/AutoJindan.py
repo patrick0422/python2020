@@ -24,7 +24,7 @@ URL = 'https://hcs.eduro.go.kr/#/loginHome'
 
 options = webdriver.ChromeOptions()
 options.add_experimental_option("excludeSwitches", ["enable-logging"])
-driver = webdriver.Chrome(executable_path='D:/Coding/python/AutoJindan/chromedriver', options=options)
+driver = webdriver.Chrome(executable_path='chromedriver', options=options)
 driver.get(url=URL)
 
 # 암묵적 대기 시간
@@ -102,28 +102,27 @@ print('로그인 완료')
 
 # 학생 리스트 가져오기
 sleep(3)
-items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_tag_name('li')
-while len(items) < target_num:
-    items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_tag_name('li')
 
+items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_tag_name('li')
 print(f'확인된 총 학생 수 : {len(items)}명')
 
 
 while True:
-    # # 자가진단 완료하지 않은 학생만 가져오기
+    # 자가진단 완료하지 않은 학생만 가져오기
     items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_css_selector('li:not(.active)')
-
-    sleep(0.5)
-    print(f'자가진단이 되지 않은 학생 수 : {len(items)}명')
     if len(items) == 0:
         print('자가진단이 모두 완료되었습니다.')
         break
+
+    sleep(0.5)
+    print(f'자가진단이 되지 않은 학생 수 : {len(items)}명')
+    
 
     item = items[0]
     name = item.find_element_by_class_name('name').get_attribute('innerHTML')
 
     #region 자가진단
-    # sleep(0.5)
+    sleep(0.5)
     item.find_element_by_class_name('name').click()
     print(f'{name}학생의 자가진단을 시작합니다.')
 
@@ -139,6 +138,7 @@ while True:
 
     # 처음으로 버튼 클릭
     driver.find_element_by_xpath('/html/body/app-root/div/div[1]/div[1]/ul/li/a').click()
+    sleep(1)
     #endregion
 
 #endregion
