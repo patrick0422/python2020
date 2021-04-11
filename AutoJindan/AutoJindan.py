@@ -30,7 +30,7 @@ driver.get(url=URL)
 # 암묵적 대기 시간
 driver.implicitly_wait(30)
 # 명시적 대기 시간
-wait = WebDriverWait(driver, 30, 0.2)
+wait = WebDriverWait(driver, 5, 0.2)
 
 
 # 자가진단에 쓸 정보
