@@ -2,6 +2,8 @@
 # https://greeksharifa.github.io/references/2020/10/30/python-selenium-usage/
 
 #region Import
+import sys
+
 import selenium
 from selenium import webdriver
 from selenium.webdriver import ActionChains
@@ -28,7 +30,7 @@ driver = webdriver.Chrome(executable_path='chromedriver', options=options)
 driver.get(url=URL)
 
 # 암묵적 대기 시간
-driver.implicitly_wait(30)
+driver.implicitly_wait(5)
 # 명시적 대기 시간
 wait = WebDriverWait(driver, 5, 0.2)
 
@@ -110,11 +112,10 @@ print(f'확인된 총 학생 수 : {len(items)}명')
 while True:
     # 자가진단 완료하지 않은 학생만 가져오기
     items = driver.find_element_by_xpath('//*[@id="container"]/div/section[2]/div[2]/ul').find_elements_by_css_selector('li:not(.active)')
+    sleep(0.5)
     if len(items) == 0:
         print('자가진단이 모두 완료되었습니다.')
         break
-
-    sleep(0.5)
     print(f'자가진단이 되지 않은 학생 수 : {len(items)}명')
     
 
@@ -146,6 +147,5 @@ while True:
 
 
 # 브라우저 닫기
-sleep(2)
 print('프로그램을 종료합니다.')
 driver.close()
