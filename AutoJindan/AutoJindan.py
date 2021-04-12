@@ -2,8 +2,6 @@
 # https://greeksharifa.github.io/references/2020/10/30/python-selenium-usage/
 
 #region Import
-import os
-
 import selenium
 
 from selenium import webdriver
@@ -22,6 +20,7 @@ from time import sleep
 
 
 #region Initialize
+print("Initializing...")
 URL = 'https://hcs.eduro.go.kr/#/loginHome'
 
 options = webdriver.ChromeOptions()
@@ -29,7 +28,12 @@ options = webdriver.ChromeOptions()
 options.add_argument("headless")
 # 불필요한 로그 비활성화
 options.add_experimental_option("excludeSwitches", ["enable-logging"])
-driver = webdriver.Chrome(executable_path='chromedriver', options=options)
+
+try:
+    driver = webdriver.Chrome(executable_path='chromedriver', options=options)
+except selenium.common.exceptions.WebDriverException as err:
+    print("[ERROR] chromedriver.exe를 찾을 수 없습니다.")
+    quit()
 driver.get(url=URL)
 
 # 암묵적 대기 시간
@@ -39,14 +43,24 @@ wait = WebDriverWait(driver, 5, 0.2)
 
 
 # 자가진단에 쓸 정보
-f = open('user.txt', 'r')
-NAME = f.readline.__format__
+print('Reading User Info...')
+try:
+    file = open('user.txt', 'r', encoding='utf-8')
+except FileNotFoundError as err:
+    print('[ERROR] user.txt 파일을 찾을 수 없습니다.')
+    quit()
 
-NAME = '양태웅'
-DAY_OF_BIRTH = '040422'
-PASSWORD = '0422'
+print('\n확인된 계정정보:')
+NAME = file.readline()[-4:].strip()
+print(f'이름: [{NAME}]')
+DAY_OF_BIRTH = file.readline()[-7:].strip()
+print(f'생년월일: [{DAY_OF_BIRTH}]')
+PASSWORD = file.readline()[-4:].strip()
+print(f'비밀번호: [{PASSWORD}]\n')
 
-target_num = 8
+# NAME = '양태웅'
+# DAY_OF_BIRTH = '040422'
+# PASSWORD = '0422'
 
 #endregion
 
@@ -82,7 +96,7 @@ wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="softBoardListLaye
 driver.find_element_by_xpath('//*[@id="softBoardListLayer"]/div[2]/div[1]/ul/li/a').click()
 # 제출
 driver.find_element_by_class_name('layerFullBtn').click()
-
+sleep(0.5)
 
 
 # 4. 성명, 생년월일 선택
@@ -101,7 +115,7 @@ driver.find_element_by_class_name('input_text_common').send_keys(PASSWORD)
 wait.until(EC.presence_of_element_located((By.ID, 'btnConfirm')))
 wait.until(EC.element_to_be_clickable((By.ID, 'btnConfirm')))
 driver.find_element_by_xpath('//*[@id="btnConfirm"]').click()
-print('로그인 완료')
+print('로그인 완료\n')
 #endregion
 
 
@@ -155,4 +169,5 @@ while True:
 # 브라우저 닫기
 print('프로그램을 종료합니다.')
 driver.close()
-os._exit(1)
+sleep(1)
+quit()
