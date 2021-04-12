@@ -2,9 +2,10 @@
 # https://greeksharifa.github.io/references/2020/10/30/python-selenium-usage/
 
 #region Import
-import sys
+import os
 
 import selenium
+
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 
@@ -16,7 +17,6 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 
 from time import sleep
-
 #endregion
 
 
@@ -25,6 +25,9 @@ from time import sleep
 URL = 'https://hcs.eduro.go.kr/#/loginHome'
 
 options = webdriver.ChromeOptions()
+# 헤드리스 모드로 동작
+options.add_argument("headless")
+# 불필요한 로그 비활성화
 options.add_experimental_option("excludeSwitches", ["enable-logging"])
 driver = webdriver.Chrome(executable_path='chromedriver', options=options)
 driver.get(url=URL)
@@ -36,6 +39,9 @@ wait = WebDriverWait(driver, 5, 0.2)
 
 
 # 자가진단에 쓸 정보
+f = open('user.txt', 'r')
+NAME = f.readline.__format__
+
 NAME = '양태웅'
 DAY_OF_BIRTH = '040422'
 PASSWORD = '0422'
@@ -149,3 +155,4 @@ while True:
 # 브라우저 닫기
 print('프로그램을 종료합니다.')
 driver.close()
+os._exit(1)

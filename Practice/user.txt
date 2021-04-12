@@ -1,0 +1,3 @@
+name=양태웅
+day_of_birth(6자리)=040422
+password=0422

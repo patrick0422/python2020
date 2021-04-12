@@ -656,9 +656,6 @@
   ('multiprocessing',
    'c:\\users\\user\\appdata\\local\\programs\\python\\python38\\lib\\multiprocessing\\__init__.py',
    'PYMODULE'),
-  ('os',
-   'c:\\users\\user\\appdata\\local\\programs\\python\\python38\\lib\\os.py',
-   'PYMODULE'),
   ('_py_abc',
    'c:\\users\\user\\appdata\\local\\programs\\python\\python38\\lib\\_py_abc.py',
    'PYMODULE'),
@@ -1063,4 +1060,7 @@
    'PYMODULE'),
   ('selenium',
    'c:\\users\\user\\appdata\\local\\programs\\python\\python38\\lib\\site-packages\\selenium\\__init__.py',
+   'PYMODULE'),
+  ('os',
+   'c:\\users\\user\\appdata\\local\\programs\\python\\python38\\lib\\os.py',
    'PYMODULE')])
