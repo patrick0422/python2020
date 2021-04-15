@@ -67,10 +67,6 @@ print(f'비밀번호: [{PASSWORD}]\n')
 
 file.close()
 
-# NAME = '양태웅'
-# DAY_OF_BIRTH = '040422'
-# PASSWORD = '0422'
-
 #endregion
 
 
@@ -155,12 +151,19 @@ while True:
     sleep(0.5)
     item.find_element_by_class_name('name').click()
     print(f'{name}학생의 자가진단을 시작합니다.')
+    sleep(0.5)
 
     # 조사 응답
     wait.until(EC.element_to_be_clickable((By.ID, 'survey_q1a1')))
-    driver.find_element_by_xpath('//*[@id="survey_q1a1"]').click()
-    driver.find_element_by_xpath('//*[@id="survey_q2a1"]').click()
-    driver.find_element_by_xpath('//*[@id="survey_q3a1"]').click()
+    driver.execute_script("arguments[0].scrollIntoView();", driver.find_element_by_xpath('//*[@id="survey_q1a1"]'))
+    driver.execute_script("arguments[0].click();", driver.find_element_by_xpath('//*[@id="survey_q1a1"]'))
+    driver.execute_script("arguments[0].click();", driver.find_element_by_xpath('//*[@id="survey_q2a1"]'))
+    driver.execute_script("arguments[0].click();", driver.find_element_by_xpath('//*[@id="survey_q3a1"]'))
+
+
+    # driver.find_element_by_xpath('//*[@id="survey_q1a1"]').click()
+    # driver.find_element_by_xpath('//*[@id="survey_q2a1"]').click()
+    # driver.find_element_by_xpath('//*[@id="survey_q3a1"]').click()
 
     # 응답 제출
     driver.find_element_by_id('btnConfirm').click()
