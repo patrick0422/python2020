@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['AutoJindan.py'],
-             pathex=['D:\\Coding\\python\\AutoJindan'],
+             pathex=['D:\\Coding\\python2020\\AutoJindan'],
              binaries=[],
              datas=[],
              hiddenimports=[],
