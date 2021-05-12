@@ -3,6 +3,7 @@
 
 #region Import
 import selenium
+import sys
 
 from selenium import webdriver
 from selenium.webdriver import ActionChains
@@ -51,20 +52,14 @@ except FileNotFoundError as err:
     quit()
 
 
-print('\n입력된 계정정보:')
+print('\n계정정보 불러오는 중:\n')
 SIDO = file.readline().strip()
-print(f'시/도: [{SIDO}]')
 LEVEL = file.readline().strip()
-print(f'학교급: [{LEVEL}]')
 SCHOOL_NAME = file.readline().strip()
-print(f'학교명: [{SCHOOL_NAME}]')
 NAME = file.readline().strip()
-print(f'이름: [{NAME}]')
 DAY_OF_BIRTH = file.readline().strip()
-print(f'생년월일: [{DAY_OF_BIRTH}]')
 PASSWORD = file.readline().strip()
-print(f'비밀번호: [{PASSWORD}]\n')
-
+print('계정정보를 불러왔습니다')
 file.close()
 
 #endregion
@@ -173,6 +168,8 @@ while True:
     
 
 
-# 브라우저 닫기)
+# 브라우저 닫기
 driver.close()
+
+sys.exit(0)
 print("Ctrl+C를 눌러 종료하세요")
